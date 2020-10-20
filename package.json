@@ -1,0 +1,11 @@
+{
+  "name": "user_permission_nodejs",
+  "version": "1.0.0",
+  "description": "Manage user roles in node.js",
+  "main": "index.js",
+  "scripts": {
+    "devStart": "nodemon server.js"
+  },
+  "author": "Nikolai_Chirkov",
+  "license": "ISC"
+}
