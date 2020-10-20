@@ -2,15 +2,19 @@ const express = require('express');
 const { authUser } = require('../basicAuth');
 const router = express.Router();
 const { projects } = require('../data');
-const { canViewProject, scopedProjects } = require('../permissions/project');
+const { canViewProject, canDeleteProject, scopedProjects } = require('../permissions/project');
 
 router.get('/', authUser, (req, res) => {
   res.json(scopedProjects(req.user, projects));
-})
+});
 
 router.get('/:projectId', setProject, authUser, authGetProject, (req, res) => {
   res.json(req.project);
-})
+});
+
+router.delete('/:projectId', setProject, authUser, authDeleteProject, (req,res) => {
+  res.send('deleted project');
+});
 
 function setProject(req, res, next) {
   const projectId = parseInt(req.params.projectId);
@@ -27,6 +31,15 @@ function authGetProject(req, res, next) {
   if (!canViewProject(req.user, req.project)) {
     res.status(401);
     return res.send('Not allowed');
+  }
+
+  next();
+}
+
+function authDeleteProject(req, res, next) {
+  if (!canDeleteProject(req.user, req.project)) {
+    res.status(401);
+    return res.send('Not Allowed');
   }
 
   next();
